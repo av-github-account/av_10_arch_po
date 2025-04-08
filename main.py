@@ -1,20 +1,20 @@
-import asyncio
-from converters import *
+from converters import UsdConverter
+from converters.currency_rate_service import CurrencyRateService
 
-def main():    
-    amount = int(input('Введите значение в USD: \n'))
-    
-    converter = UsdRubConverter()
-    print(f"{amount} USD to RUB: {converter.convert_usd_to_rub(amount)}")
-    
-    converter = UsdEurConverter()
-    print(f"{amount} USD to EUR: {converter.convert_usd_to_eur(amount)}")
-    
-    converter = UsdGbpConverter()
-    print(f"{amount} USD to GBP: {converter.convert_usd_to_gbp(amount)}")
-    
-    converter = UsdCnyConverter()
-    print(f"{amount} USD to CNY: {converter.convert_usd_to_cny(amount)}")
+def main():
+    amount = float(input("Введите значение в USD: \n"))
+    service = CurrencyRateService()
+    rates = service.get_rates()
+
+    converters = {
+        'RUB': UsdConverter(rates, 'RUB'),
+        'EUR': UsdConverter(rates, 'EUR'),
+        'GBP': UsdConverter(rates, 'GBP'),
+        'CNY': UsdConverter(rates, 'CNY'),
+    }
+
+    for currency, converter in converters.items():
+        print(f"{amount} USD to {currency}: {converter.convert(amount):.2f}")
 
 if __name__ == "__main__":
     main()
